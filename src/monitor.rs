@@ -9,6 +9,31 @@ use anyhow::Result;
 use futures::StreamExt;
 use std::env;
 
+#[derive(Debug, Clone)]
+pub struct Account {
+    pub address: Address,
+    pub label: String,
+}
+
+#[derive(Clone)]
+pub struct MonitorConfig {
+    pub rpc_url: String,
+    pub app_settings: AppSettings,
+    pub accounts: Vec<Account>,
+}
+
+impl MonitorConfig {
+    pub fn new(accounts: Vec<Account>) -> Self {
+        let rpc_url = env::var("RPC_URL").unwrap_or("https://odyssey.ithaca.xyz".to_string());
+
+        Self {
+            rpc_url,
+            app_settings: AppSettings::default(),
+            accounts,
+        }
+    }
+}
+
 pub async fn run_monitoring(
     config: MonitorConfig,
     provider: RootProvider<PubSubFrontend>,
@@ -37,29 +62,4 @@ pub async fn run_monitoring(
     }
 
     Ok(())
-}
-
-#[derive(Debug, Clone)]
-pub struct Account {
-    pub address: Address,
-    pub label: String,
-}
-
-#[derive(Clone)]
-pub struct MonitorConfig {
-    pub rpc_url: String,
-    pub app_settings: AppSettings,
-    pub accounts: Vec<Account>,
-}
-
-impl MonitorConfig {
-    pub fn new(accounts: Vec<Account>) -> Self {
-        let rpc_url = env::var("RPC_URL").unwrap_or("https://odyssey.ithaca.xyz".to_string());
-
-        Self {
-            rpc_url,
-            app_settings: AppSettings::default(),
-            accounts,
-        }
-    }
 }
