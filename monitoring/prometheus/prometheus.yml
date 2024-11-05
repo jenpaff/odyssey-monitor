@@ -1,0 +1,19 @@
+scrape_configs:
+  - job_name: metrics_monitor
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    static_configs:
+      - targets: ['odyssey-monitor:9000']
+  - job_name: 'health_monitor'
+    metrics_path: '/health'
+    scrape_interval: 60s
+    static_configs:
+      - targets: ['odyssey-monitor:9000']
+
+rule_files:
+  - 'rules.yml'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
