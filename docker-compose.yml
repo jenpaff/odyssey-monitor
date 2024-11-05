@@ -2,6 +2,7 @@ version: '3.8'
 name: odyssey
 services:
   monitor:
+    container_name: odyssey-monitor
     build:
       context: .
       dockerfile: Dockerfile

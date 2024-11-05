@@ -40,16 +40,8 @@
                 "value": null
               },
               {
-                "color": "#E24D42",
-                "value": 0
-              },
-              {
-                "color": "#EAB839",
-                "value": 1
-              },
-              {
-                "color": "green",
-                "value": 3
+                "color": "purple",
+                "value": 80
               }
             ]
           }
@@ -62,11 +54,11 @@
         "x": 0,
         "y": 0
       },
-      "id": 1,
+      "id": 3,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
-        "justifyMode": "center",
+        "justifyMode": "auto",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
@@ -77,19 +69,15 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "value",
+        "textMode": "auto",
         "wideLayout": true
       },
       "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "balance_account{address=\"0x1234562C27E07675Fe8ed90BbFB9a62853edCBb2\"}",
+          "expr": "current_block",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
@@ -98,8 +86,7 @@
           "useBackend": false
         }
       ],
-      "title": "Sequencer Balance",
-      "transparent": true,
+      "title": "Current L2 Block",
       "type": "stat"
     },
     {
@@ -178,6 +165,87 @@
       ],
       "title": "Sponsor Balance",
       "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#E24D42",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 1
+              },
+              {
+                "color": "green",
+                "value": 3
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "balance_account{address=\"0x1234562C27E07675Fe8ed90BbFB9a62853edCBb2\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Sequencer Balance",
+      "transparent": true,
+      "type": "stat"
     }
   ],
   "preload": false,
@@ -194,6 +262,6 @@
   "timezone": "browser",
   "title": "Odyssey Dashboard",
   "uid": "ee2z06dl32by8d",
-  "version": 3,
+  "version": 5,
   "weekStart": ""
 }
