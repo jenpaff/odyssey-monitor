@@ -6,8 +6,9 @@ use alloy::providers::Provider;
 use alloy_provider::RootProvider;
 use alloy_pubsub::PubSubFrontend;
 use anyhow::Result;
-use futures::StreamExt;
+use futures::{future::join_all, StreamExt};
 use std::env;
+use std::future::IntoFuture;
 
 #[derive(Debug, Clone)]
 pub struct Account {
@@ -49,8 +50,21 @@ pub async fn run_monitoring(
 
         CURRENT_BLOCK.set(block.header.number as i64);
 
-        for account in &config.accounts {
-            if let Ok(balance) = provider.get_balance(account.address).await {
+        let futs = config
+            .accounts
+            .iter()
+            .map(|a| {
+                provider
+                    .get_balance(a.address)
+                    .block_id(block.header.number.into())
+                    .into_future()
+            })
+            .collect::<Vec<_>>();
+
+        let balances = join_all(futs).await;
+
+        for (account, balance) in config.accounts.iter().zip(balances) {
+            if let Ok(balance) = balance {
                 if let Ok(eth_balance) = format_units(balance, 18).unwrap().parse::<f64>() {
                     tracing::info!("💰 Balance for {}: {} ETH", account.label, eth_balance);
                     BALANCE_ACCOUNT
