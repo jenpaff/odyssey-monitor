@@ -33,8 +33,7 @@ groups:
     annotations:
       summary: "Block number not incrementing"
       description: |-
-        Block number has been stuck at {{ $value }} for over 5 minutes.
-        Last change was at {{ $labels.last_change }}.
+        Block number has been stuck for over 5 minutes.
   - alert: NEGATING TEST ALERT BlockNotIncrementing
     expr: |
       rate(current_block[5m]) > 0
@@ -45,8 +44,7 @@ groups:
       summary: "NEGATING TEST ALERT for Block number not incrementing"
       description: |-
         THIS IS JUST A TEST ALERT FOR LOCAL TESTING
-        Block number has been stuck at {{ $value }} for over 5 minutes.
-        Last change was at {{ $labels.last_change }}.
+        Block number has been stuck for over 5 minutes.
   - alert: HealthCheckFailing
     expr: |
       up{job="health_monitor"} == 0
