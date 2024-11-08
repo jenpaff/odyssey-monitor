@@ -35,6 +35,8 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_PANELS_MIN_REFRESH_INTERVAL: 1s
+      GF_DEFAULT_REFRESH_INTERVALS: "1s,2s,5s,10s,30s"
 
   alertmanager:
     image: prom/alertmanager:latest
