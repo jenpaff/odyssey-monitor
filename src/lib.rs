@@ -14,4 +14,7 @@ lazy_static! {
     pub static ref CURRENT_BLOCK: IntGauge =
         register_int_gauge!("current_block", "Processing current block")
             .expect("Cannot create block metric");
+    pub static ref SEQUENCER_NONCE: IntGauge =
+        register_int_gauge!("sequencer_nonce", "Current sequencer nonce")
+            .expect("Cannot create none metric");
 }

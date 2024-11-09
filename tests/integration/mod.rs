@@ -19,11 +19,11 @@ impl TestApp {
         let acc_to_monitor = vec![
             Account {
                 address: address!("1234562C27E07675Fe8ed90BbFB9a62853edCBb2"),
-                label: "sponsor".to_string(),
+                label: "sequencer".to_string(),
             },
             Account {
                 address: address!("aa52Be611a9b620aFF67FbC79326e267cc3F2c69"),
-                label: "sequencer".to_string(),
+                label: "sponsor".to_string(),
             },
         ];
 
@@ -95,14 +95,9 @@ async fn test_metrics() {
     handle.abort();
 
     let scrape = app.get_metrics().await;
-    assert!(scrape
-        .samples
-        .iter()
-        .find(|s| s.metric == "balance_account")
-        .is_some());
-    assert!(scrape
-        .samples
-        .iter()
-        .find(|s| s.metric == "current_block")
-        .is_some());
+    let expected_metrics = vec!["balance_account", "current_block", "sequencer_nonce"];
+
+    for metric in expected_metrics {
+        assert!(scrape.samples.iter().find(|s| s.metric == metric).is_some());
+    }
 }

@@ -1,5 +1,5 @@
-use crate::CURRENT_BLOCK;
 use crate::{app::AppSettings, BALANCE_ACCOUNT};
+use crate::{CURRENT_BLOCK, SEQUENCER_NONCE};
 use alloy::primitives::utils::format_units;
 use alloy::primitives::Address;
 use alloy::providers::Provider;
@@ -9,6 +9,7 @@ use anyhow::Result;
 use futures::{future::join_all, StreamExt};
 use std::env;
 use std::future::IntoFuture;
+use tokio::join;
 
 #[derive(Debug, Clone)]
 pub struct Account {
@@ -39,6 +40,13 @@ pub async fn run_monitoring(
     config: MonitorConfig,
     provider: RootProvider<PubSubFrontend>,
 ) -> Result<()> {
+    let sequencer = config
+        .accounts
+        .iter()
+        .find(|a| a.label == "sequencer")
+        .unwrap()
+        .address;
+
     let mut block_stream = provider.subscribe_blocks().await?.into_stream();
 
     while let Some(block) = block_stream.next().await {
@@ -50,7 +58,12 @@ pub async fn run_monitoring(
 
         CURRENT_BLOCK.set(block.header.number as i64);
 
-        let futs = config
+        let nonce_fut = provider
+            .get_transaction_count(sequencer)
+            .block_id(block.header.number.into())
+            .into_future();
+
+        let balances_fut = config
             .accounts
             .iter()
             .map(|a| {
@@ -61,7 +74,12 @@ pub async fn run_monitoring(
             })
             .collect::<Vec<_>>();
 
-        let balances = join_all(futs).await;
+        let (sequencer_nonce, balances) = join!(nonce_fut, join_all(balances_fut));
+
+        if let Ok(sequencer_nonce) = sequencer_nonce {
+            tracing::info!("#️⃣  Sequencer Nonce : {:?}", sequencer_nonce);
+            SEQUENCER_NONCE.set(sequencer_nonce as i64);
+        }
 
         for (account, balance) in config.accounts.iter().zip(balances) {
             if let Ok(balance) = balance {
