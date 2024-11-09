@@ -16,11 +16,11 @@ async fn main() -> std::io::Result<()> {
     let accounts = vec![
         Account {
             address: address!("1234562C27E07675Fe8ed90BbFB9a62853edCBb2"),
-            label: "sponsor".to_string(),
+            label: "sequencer".to_string(),
         },
         Account {
             address: address!("aa52Be611a9b620aFF67FbC79326e267cc3F2c69"),
-            label: "sequencer".to_string(),
+            label: "sponsor".to_string(),
         },
     ];
 

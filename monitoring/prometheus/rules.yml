@@ -12,18 +12,6 @@ groups:
       description: |-
         Account {{ $labels.label }} ({{ $labels.address }}) has a balance of {{ $value }} ETH, which is below 1 ETH threshold.
         Please top up this account.
-  - alert: NEGATING TEST ALERT AccountBalanceLow
-    expr: |
-      balance_account > 0.5
-    for: 5m
-    labels:
-      severity: high
-    annotations:
-      summary: '{{ $labels.label }} test alert for local testing: account balance is too low ({{ $value }} ETH)'
-      description: |-
-        THIS IS JUST A TEST ALERT FOR LOCAL TESTING
-        Account {{ $labels.label }} ({{ $labels.address }}) has a balance of {{ $value }} ETH, which is below 1 ETH threshold.
-        Please top up this account.
   - alert: BlockNotIncrementing
     expr: |
       changes(current_block[5m]) == 0
@@ -34,17 +22,16 @@ groups:
       summary: "Block number not incrementing"
       description: |-
         Block number has been stuck for over 5 minutes.
-  - alert: NEGATING TEST ALERT BlockNotIncrementing
+  - alert: SequencerNonceNotIncrementing
     expr: |
-      rate(current_block[5m]) > 0
+      changes(sequencer_nonce[5m]) == 0
     for: 5m
     labels:
       severity: critical
     annotations:
-      summary: "NEGATING TEST ALERT for Block number not incrementing"
+      summary: "Sequencer nonce not incrementing"
       description: |-
-        THIS IS JUST A TEST ALERT FOR LOCAL TESTING
-        Block number has been stuck for over 5 minutes.
+        Sequencer nonce with value {{ $value }} has been stuck for over 5 minutes.
   - alert: HealthCheckFailing
     expr: |
       up{job="health_monitor"} == 0
@@ -54,3 +41,16 @@ groups:
     annotations:
       summary: "Health check endpoint is down"
       description: "Health check endpoint at {{ $labels.instance }} is not responding with HTTP 200"
+# Uncomment the negating test alerts below if you want to verify slack hook works well when testing
+  # - alert: NEGATING TEST ALERT AccountBalanceLow
+  #   expr: |
+  #     balance_account > 0.5
+  #   for: 5m
+  #   labels:
+  #     severity: high
+  #   annotations:
+  #     summary: '{{ $labels.label }} test alert for local testing: account balance is too low ({{ $value }} ETH)'
+  #     description: |-
+  #       THIS IS JUST A TEST ALERT FOR LOCAL TESTING
+  #       Account {{ $labels.label }} ({{ $labels.address }}) has a balance of {{ $value }} ETH, which is below 0.5 ETH threshold.
+  #       Please top up this account.
