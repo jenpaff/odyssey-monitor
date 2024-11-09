@@ -22,7 +22,7 @@ groups:
       summary: "Block number not incrementing"
       description: |-
         Block number has been stuck for over 5 minutes.
-  - alert: BlockNotIncrementing
+  - alert: SequencerNonceNotIncrementing
     expr: |
       changes(sequencer_nonce[5m]) == 0
     for: 5m
@@ -54,14 +54,3 @@ groups:
   #       THIS IS JUST A TEST ALERT FOR LOCAL TESTING
   #       Account {{ $labels.label }} ({{ $labels.address }}) has a balance of {{ $value }} ETH, which is below 0.5 ETH threshold.
   #       Please top up this account.
-  # - alert: NEGATING TEST ALERT BlockNotIncrementing
-  #   expr: |
-  #     rate(current_block[5m]) > 0
-  #   for: 5m
-  #   labels:
-  #     severity: critical
-  #   annotations:
-  #     summary: "NEGATING TEST ALERT for Block number not incrementing"
-  #     description: |-
-  #       THIS IS JUST A TEST ALERT FOR LOCAL TESTING
-  #       Block number has been stuck for over 5 minutes.
