@@ -20,18 +20,16 @@ groups:
       severity: critical
     annotations:
       summary: "Block number not incrementing"
-      description: |-
-        Block number has been stuck for over 5 minutes.
-  - alert: SequencerNonceNotIncrementing
+      description: "Block number has been stuck for over 5 minutes."
+  - alert: SequencerIsStuck
     expr: |
-      changes(sequencer_nonce[5m]) == 0
+      nonce_gap > 0 and changes(nonce_gap[5m]) == 0 and changes(sequencer_nonce[5m]) == 0
     for: 5m
     labels:
       severity: critical
     annotations:
       summary: "Sequencer nonce not incrementing"
-      description: |-
-        Sequencer nonce with value {{ $value }} has been stuck for over 5 minutes.
+      description: "Sequencer nonce hasn't increased while there is a nonce gap of {{ $value }}"
   - alert: HealthCheckFailing
     expr: |
       up{job="health_monitor"} == 0

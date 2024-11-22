@@ -1,5 +1,5 @@
 use crate::{app::AppSettings, BALANCE_ACCOUNT};
-use crate::{CURRENT_BLOCK, SEQUENCER_NONCE};
+use crate::{CURRENT_BLOCK, SEQUENCER_NONCE, SEQUENCER_NONCE_GAP};
 use alloy::primitives::utils::format_units;
 use alloy::primitives::Address;
 use alloy::providers::Provider;
@@ -63,6 +63,11 @@ pub async fn run_monitoring(
             .block_id(block.header.number.into())
             .into_future();
 
+        let pending_nonce_fut = provider
+            .get_transaction_count(sequencer)
+            .pending()
+            .into_future();
+
         let balances_fut = config
             .accounts
             .iter()
@@ -74,11 +79,19 @@ pub async fn run_monitoring(
             })
             .collect::<Vec<_>>();
 
-        let (sequencer_nonce, balances) = join!(nonce_fut, join_all(balances_fut));
+        let (sequencer_nonce, sequencer_nonce_pending, balances) =
+            join!(nonce_fut, pending_nonce_fut, join_all(balances_fut));
 
-        if let Ok(sequencer_nonce) = sequencer_nonce {
+        if let (Ok(sequencer_nonce), Ok(pending_nonce)) = (sequencer_nonce, sequencer_nonce_pending) {
             tracing::info!("#️⃣  Sequencer Nonce : {:?}", sequencer_nonce);
             SEQUENCER_NONCE.set(sequencer_nonce as i64);
+
+            let nonce_gap = pending_nonce.saturating_sub(sequencer_nonce);
+            SEQUENCER_NONCE_GAP.set(nonce_gap as i64);
+            tracing::info!(
+                "📨 Sequencer nonce gap: {:?}",
+                nonce_gap,
+            );
         }
 
         for (account, balance) in config.accounts.iter().zip(balances) {
