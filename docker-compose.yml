@@ -16,12 +16,12 @@ services:
     container_name: prometheus
     restart: always
     ports:
-      - '9090:9090'
+      - '9091:9091'
     volumes:
       - ./monitoring/prometheus:/etc/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--web.external-url=http://localhost:9090'
+      - '--web.external-url=http://localhost:9091'
 
   grafana:
     image: grafana/grafana:latest

@@ -6,9 +6,10 @@ Simple prometheus exporter to fetch metrics and configure alerts for Odyssey Tes
 
 | name                                | description                                                                             |
 | ----------------------------------- | ----------------------------------------------------------------------------------      |
-| `balance_account`                   | Exposes balance of sponsor and sequencer                                                |
+| `balance_account`                   | Exposes balance of ERC20 contract used for experiments and sequencer                    |
 | `sequencer_nonce`                   | Exposes nonce of the sequencer                                                          |
 | `current_block`                     | Exposes current block height                                                            |
+| `sequencer_nonce`, `nonce_gap`      | Exposes current sequencer none & nonce gap to alert if sequencer is stuck               |
 
 ## Build & Test
 

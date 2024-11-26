@@ -19,8 +19,8 @@ async fn main() -> std::io::Result<()> {
             label: "sequencer".to_string(),
         },
         Account {
-            address: address!("aa52Be611a9b620aFF67FbC79326e267cc3F2c69"),
-            label: "sponsor".to_string(),
+            address: address!("238c8CD93ee9F8c7Edf395548eF60c0d2e46665E"),
+            label: "exp_erc20_contract".to_string(),
         },
     ];
 

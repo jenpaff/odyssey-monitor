@@ -23,7 +23,7 @@ impl TestApp {
             },
             Account {
                 address: address!("aa52Be611a9b620aFF67FbC79326e267cc3F2c69"),
-                label: "sponsor".to_string(),
+                label: "exp_er20_contract".to_string(),
             },
         ];
 
@@ -95,7 +95,12 @@ async fn test_metrics() {
     handle.abort();
 
     let scrape = app.get_metrics().await;
-    let expected_metrics = vec!["balance_account", "current_block", "sequencer_nonce"];
+    let expected_metrics = vec![
+        "balance_account",
+        "current_block",
+        "sequencer_nonce",
+        "nonce_gap",
+    ];
 
     for metric in expected_metrics {
         assert!(scrape.samples.iter().find(|s| s.metric == metric).is_some());
