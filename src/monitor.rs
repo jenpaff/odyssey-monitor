@@ -82,16 +82,14 @@ pub async fn run_monitoring(
         let (sequencer_nonce, sequencer_nonce_pending, balances) =
             join!(nonce_fut, pending_nonce_fut, join_all(balances_fut));
 
-        if let (Ok(sequencer_nonce), Ok(pending_nonce)) = (sequencer_nonce, sequencer_nonce_pending) {
+        if let (Ok(sequencer_nonce), Ok(pending_nonce)) = (sequencer_nonce, sequencer_nonce_pending)
+        {
             tracing::info!("#️⃣  Sequencer Nonce : {:?}", sequencer_nonce);
             SEQUENCER_NONCE.set(sequencer_nonce as i64);
 
             let nonce_gap = pending_nonce.saturating_sub(sequencer_nonce);
             SEQUENCER_NONCE_GAP.set(nonce_gap as i64);
-            tracing::info!(
-                "📨 Sequencer nonce gap: {:?}",
-                nonce_gap,
-            );
+            tracing::info!("📨 Sequencer nonce gap: {:?}", nonce_gap,);
         }
 
         for (account, balance) in config.accounts.iter().zip(balances) {
