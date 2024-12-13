@@ -39,6 +39,15 @@ groups:
     annotations:
       summary: "Health check endpoint is down"
       description: "Health check endpoint at {{ $labels.instance }} is not responding with HTTP 200"
+- alert: TooManyRPCErrors
+    expr: |
+      increase(num_rpc_errors[5m]) > 5
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Too many RPC errors detected"
+      description: "{{ $value }} RPC errors detected in the last 5 minutes"
 # Uncomment the negating test alerts below if you want to verify slack hook works well when testing
   # - alert: TEST ALERT SequencerNonceChanging
   #   expr: |
