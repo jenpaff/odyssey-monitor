@@ -3,14 +3,14 @@ groups:
   rules:
   - alert: AccountBalanceLow
     expr: |
-      balance_account < 0.5
+      balance_account < 0.1
     for: 5m
     labels:
       severity: high
     annotations:
       summary: '{{ $labels.label }} account balance is too low ({{ $value }} ETH)'
       description: |-
-        Account {{ $labels.label }} ({{ $labels.address }}) has a balance of {{ $value }} ETH, which is below 1 ETH threshold.
+        Account {{ $labels.label }} ({{ $labels.address }}) has a balance of {{ $value }} ETH, which is below 0.1 ETH threshold.
         Please top up this account.
   - alert: BlockNotIncrementing
     expr: |
@@ -39,17 +39,6 @@ groups:
     annotations:
       summary: "Health check endpoint is down"
       description: "Health check endpoint at {{ $labels.instance }} is not responding with HTTP 200"
-# Uncomment the negating test alerts below if you want to verify slack hook works well when testing
-  # - alert: TEST ALERT SequencerNonceChanging
-  #   expr: |
-  #     changes(sequencer_nonce[5m]) > 0
-  #   for: 5m
-  #   labels:
-  #     severity: high
-  #   annotations:
-  #     summary: '{{ $labels.label }} test alert for local testing sequencer nonce is changing'
-  #     description: |-
-  #       THIS IS JUST A TEST ALERT FOR LOCAL TESTING
 # Uncomment the negating test alerts below if you want to verify slack hook works well when testing
   # - alert: NEGATING TEST ALERT AccountBalanceLow
   #   expr: |

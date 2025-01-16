@@ -16,16 +16,10 @@ struct TestApp {
 
 impl TestApp {
     async fn new() -> Self {
-        let acc_to_monitor = vec![
-            Account {
-                address: address!("1234562C27E07675Fe8ed90BbFB9a62853edCBb2"),
-                label: "sequencer".to_string(),
-            },
-            Account {
-                address: address!("aa52Be611a9b620aFF67FbC79326e267cc3F2c69"),
-                label: "exp_er20_contract".to_string(),
-            },
-        ];
+        let acc_to_monitor = vec![Account {
+            address: address!("1234562C27E07675Fe8ed90BbFB9a62853edCBb2"),
+            label: "sequencer".to_string(),
+        }];
 
         let mut config = MonitorConfig::new(acc_to_monitor);
         config.app_settings.port = 0;
