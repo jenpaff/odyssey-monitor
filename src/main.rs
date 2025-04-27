@@ -12,7 +12,6 @@ async fn main() -> std::io::Result<()> {
 
     tracing_subscriber::fmt::init();
 
-    // TODO: should make this configurable
     let accounts = vec![
         Account {
             address: address!("1234562C27E07675Fe8ed90BbFB9a62853edCBb2"),
@@ -30,13 +29,13 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Failed to start the HTTP server");
 
-    let provider_ws = ProviderBuilder::new()
-        .on_ws(WsConnect::new("wss://odyssey.ithaca.xyz"))
+    let provider = ProviderBuilder::new()
+        .connect_ws(WsConnect::new("wss://reth-ethereum.ithaca.xyz/ws"))
         .await
         .expect("could not connect to WebSocket");
 
     tokio::select! {
-        _ = run_monitoring(config, provider_ws) => {},
+        _ = run_monitoring(config, provider) => {},
         _ = server => {},
     }
 
