@@ -1,6 +1,9 @@
-use alloy::{primitives::address, providers::ProviderBuilder};
-use alloy_provider::{RootProvider, WsConnect};
-use alloy_pubsub::PubSubFrontend;
+use alloy::network::Ethereum;
+use alloy::{
+    primitives::address,
+    providers::{Provider, ProviderBuilder},
+};
+use alloy_provider::WsConnect;
 use odyssey_monitor::{
     app::run_server,
     monitor::{run_monitoring, Account, MonitorConfig},
@@ -41,9 +44,9 @@ impl TestApp {
         }
     }
 
-    async fn create_provider(&self) -> RootProvider<PubSubFrontend> {
+    async fn create_provider(&self) -> impl Provider<Ethereum> + Clone {
         ProviderBuilder::new()
-            .on_ws(WsConnect::new("wss://odyssey.ithaca.xyz"))
+            .connect_ws(WsConnect::new("wss://odyssey.ithaca.xyz"))
             .await
             .expect("could not connect to WebSocket")
     }
