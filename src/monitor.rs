@@ -46,7 +46,16 @@ where
         .unwrap()
         .address;
 
-    let mut block_stream = provider.subscribe_blocks().await?.into_stream();
+    let block_subscriber = provider.subscribe_blocks().await;
+
+    let mut block_stream: SubscriptionStream<Block> = match block_subscriber {
+        Ok(block_subscription) => block_subscription.into_stream(),
+        Err(err) => {
+            tracing::error!("Error subscribing to block stream: {:?}", err);
+            NUM_RPC_ERROR.inc();
+            return Err(err.into());
+        }
+    };
 
     while let Some(block) = block_stream.next().await {
         tracing::info!(
