@@ -20,4 +20,7 @@ lazy_static! {
     pub static ref SEQUENCER_NONCE_GAP: IntGauge =
         register_int_gauge!("nonce_gap", "Sequencer nonce gap")
             .expect("Cannot create nonce gap metric");
+    pub static ref NUM_RPC_ERROR: IntGauge =
+        register_int_gauge!("num_rpc_error", "Rpc error count")
+            .expect("Cannot create nonce gap metric");
 }

@@ -1,10 +1,11 @@
 use crate::{app::AppSettings, BALANCE_ACCOUNT};
-use crate::{CURRENT_BLOCK, SEQUENCER_NONCE, SEQUENCER_NONCE_GAP};
+use crate::{CURRENT_BLOCK, NUM_RPC_ERROR, SEQUENCER_NONCE, SEQUENCER_NONCE_GAP};
 use alloy::primitives::utils::format_units;
 use alloy::primitives::Address;
 use alloy::providers::Provider;
 use alloy_provider::RootProvider;
-use alloy_pubsub::PubSubFrontend;
+use alloy_pubsub::{PubSubFrontend, SubscriptionStream};
+use alloy_rpc_types::Block;
 use anyhow::Result;
 use futures::{future::join_all, StreamExt};
 use std::env;
@@ -47,7 +48,16 @@ pub async fn run_monitoring(
         .unwrap()
         .address;
 
-    let mut block_stream = provider.subscribe_blocks().await?.into_stream();
+    let block_subscriber = provider.subscribe_blocks().await;
+
+    let mut block_stream: SubscriptionStream<Block> = match block_subscriber {
+        Ok(block_subscription) => block_subscription.into_stream(),
+        Err(err) => {
+            tracing::error!("Error subscribing to block stream: {:?}", err);
+            NUM_RPC_ERROR.inc();
+            return Err(err.into());
+        }
+    };
 
     while let Some(block) = block_stream.next().await {
         tracing::info!(

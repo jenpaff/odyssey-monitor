@@ -9,6 +9,7 @@ alloy = { version = "0.5.4", features = ["network", "providers"] }
 alloy-primitives = "0.8.10"
 alloy-provider = { version = "0.5.4", features = ["ws"] }
 alloy-pubsub = "0.5.4"
+alloy-rpc-types = "0.5.4"
 alloy-transport-ws = "0.5.4"
 anyhow = "1.0"
 dotenv = "0.15.0"
