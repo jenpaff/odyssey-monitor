@@ -5,12 +5,11 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4"
-alloy = { version = "0.5.4", features = ["network", "providers"] }
-alloy-primitives = "0.8.10"
-alloy-provider = { version = "0.5.4", features = ["ws"] }
-alloy-pubsub = "0.5.4"
-alloy-rpc-types = "0.5.4"
-alloy-transport-ws = "0.5.4"
+alloy = { version = "0.15.6", features = ["network", "providers"] }
+alloy-primitives = "1.0.0"
+alloy-provider = { version = "0.15.6", features = ["ws"] }
+alloy-pubsub = "0.15.6"
+alloy-transport-ws = "0.15.6"
 anyhow = "1.0"
 dotenv = "0.15.0"
 futures = "0.3.23"

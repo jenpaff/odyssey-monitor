@@ -1,11 +1,9 @@
 use crate::{app::AppSettings, BALANCE_ACCOUNT};
-use crate::{CURRENT_BLOCK, NUM_RPC_ERROR, SEQUENCER_NONCE, SEQUENCER_NONCE_GAP};
+use crate::{CURRENT_BLOCK, SEQUENCER_NONCE, SEQUENCER_NONCE_GAP};
+use alloy::network::Ethereum;
 use alloy::primitives::utils::format_units;
 use alloy::primitives::Address;
 use alloy::providers::Provider;
-use alloy_provider::RootProvider;
-use alloy_pubsub::{PubSubFrontend, SubscriptionStream};
-use alloy_rpc_types::Block;
 use anyhow::Result;
 use futures::{future::join_all, StreamExt};
 use std::env;
@@ -37,10 +35,10 @@ impl MonitorConfig {
     }
 }
 
-pub async fn run_monitoring(
-    config: MonitorConfig,
-    provider: RootProvider<PubSubFrontend>,
-) -> Result<()> {
+pub async fn run_monitoring<P>(config: MonitorConfig, provider: P) -> Result<()>
+where
+    P: Provider<Ethereum>,
+{
     let sequencer = config
         .accounts
         .iter()
@@ -62,15 +60,15 @@ pub async fn run_monitoring(
     while let Some(block) = block_stream.next().await {
         tracing::info!(
             "🧱 New block detected : Block Number : {:?} Block Hash: {:?}",
-            block.header.number,
-            block.header.hash
+            block.number,
+            block.hash
         );
 
-        CURRENT_BLOCK.set(block.header.number as i64);
+        CURRENT_BLOCK.set(block.number as i64);
 
         let nonce_fut = provider
             .get_transaction_count(sequencer)
-            .block_id(block.header.number.into())
+            .block_id(block.number.into())
             .into_future();
 
         let pending_nonce_fut = provider
@@ -84,7 +82,7 @@ pub async fn run_monitoring(
             .map(|a| {
                 provider
                     .get_balance(a.address)
-                    .block_id(block.header.number.into())
+                    .block_id(block.number.into())
                     .into_future()
             })
             .collect::<Vec<_>>();
