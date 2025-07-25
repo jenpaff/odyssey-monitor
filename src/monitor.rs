@@ -4,9 +4,8 @@ use alloy::network::Ethereum;
 use alloy::primitives::utils::format_units;
 use alloy::primitives::Address;
 use alloy::providers::Provider;
-use alloy_provider::RootProvider;
-use alloy_pubsub::{PubSubFrontend, SubscriptionStream};
-use alloy_rpc_types::Block;
+use alloy::rpc::types::Header;
+use alloy_pubsub::SubscriptionStream;
 use anyhow::Result;
 use futures::{future::join_all, StreamExt};
 use std::env;
@@ -51,7 +50,7 @@ where
 
     let block_subscriber = provider.subscribe_blocks().await;
 
-    let mut block_stream: SubscriptionStream<Block> = match block_subscriber {
+    let mut block_stream: SubscriptionStream<Header> = match block_subscriber {
         Ok(block_subscription) => block_subscription.into_stream(),
         Err(err) => {
             tracing::error!("Error subscribing to block stream: {:?}", err);

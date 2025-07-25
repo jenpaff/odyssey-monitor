@@ -30,7 +30,7 @@ async fn main() -> std::io::Result<()> {
         .expect("Failed to start the HTTP server");
 
     let provider = ProviderBuilder::new()
-        .connect_ws(WsConnect::new("wss://reth-ethereum.ithaca.xyz/ws"))
+        .connect_ws(WsConnect::new("wss://odyssey.ithaca.xyz"))
         .await
         .expect("could not connect to WebSocket");
 
